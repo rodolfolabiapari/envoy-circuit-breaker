@@ -1,0 +1,25 @@
+version: '3'
+services:
+  envoy-tls:
+    image: "envoyproxy/envoy:v1.10.0"
+    command: ["envoy", "-c", "/conf/1-envoy.yaml"]
+    ports:
+      - "15000:15000"
+      - "15001:15001"
+    volumes:
+      - ./conf:/conf
+    networks:
+      - envoy
+  httpbin:
+    image: "citizenstig/httpbin"
+    ports:
+      - "8000"
+    networks:
+      - envoy
+
+networks:
+  envoy:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
